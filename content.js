@@ -62,7 +62,7 @@
     });
 
     const dedupedVideos = window.VideoFinderHelpers.dedupeVideos(videos);
-    
+
     // Auto-update action badge based on count of available videos
     const totalSources = dedupedVideos.reduce((acc, v) => acc + (v.sources || []).length, 0);
     chrome.runtime.sendMessage({
@@ -246,9 +246,9 @@
   function debugLog(message, data) {
     if (!debugEnabled && !window.VideoFinderDebugEnabled) return;
     if (data === undefined) {
-      console.debug("[VideoFinder:content]", message);
+      console.log("[VideoFinder:content]", message);
       return;
     }
-    console.debug("[VideoFinder:content]", message, data);
+    console.log("[VideoFinder:content]", message, data);
   }
 })();
