@@ -10,12 +10,28 @@
       const mediaSources = collectHtmlMediaSources(document, helpers);
       const linkSources = collectLinkedMediaSources(document, helpers);
       const manifestSources = collectManifestSources(document, helpers);
+      const iframeSources = collectIframeMediaSources(document, helpers);
 
       helpers.debug("Common scanner source counts", {
         htmlMedia: mediaSources.length,
         linkedMedia: linkSources.length,
-        manifests: manifestSources.length
+        manifests: manifestSources.length,
+        iframes: iframeSources.length
       });
+
+
+      
+
+
+
+      if (iframeSources.length) {
+        videos.push({
+          title: document.title || "HTML video (iframe)",
+          pageUrl: location.href,
+          type: "html-video (iframe)",
+          sources: iframeSources
+        });
+      }
 
       if (mediaSources.length) {
         videos.push({
@@ -49,7 +65,8 @@
     }
   };
 
-  function collectHtmlMediaSources(document, helpers) {
+
+  function collectHtmlMediaSources(document, helpers, searchIframes) {
     const sources = [];
     document.querySelectorAll("video, audio").forEach((media, index) => {
       const directUrl = helpers.normalizeUrl(media.currentSrc || media.src);
@@ -70,6 +87,35 @@
           quality: source.getAttribute("label") || source.getAttribute("res") || helpers.qualityFromText(url),
           mimeType: source.getAttribute("type") || ""
         }, helpers));
+      });
+    });
+    return sources;
+  }
+
+  function collectIframeMediaSources(document, helpers) {
+    const sources = [];
+    Array.from(document.getElementsByTagName("iframe")).forEach(iframe => {
+      iframe.contentDocument.querySelectorAll("video, audio").forEach((media, index) => {
+        const directUrl = helpers.normalizeUrl(media.currentSrc || media.src);
+
+        if (directUrl) {
+          helpers.debug("HTML media direct source found", { index, url: directUrl });
+          sources.push(sourceFromUrl(directUrl, {
+            quality: helpers.qualityFromDimensions(media.videoWidth, media.videoHeight),
+            mimeType: media.type || "",
+            label: media.getAttribute("title") || `Media ${index + 1}`
+          }, helpers));
+        }
+
+        media.querySelectorAll("source[src]").forEach((source) => {
+          const url = helpers.normalizeUrl(source.getAttribute("src"));
+          if (!url) return;
+          helpers.debug("HTML media nested source found", { index, url });
+          sources.push(sourceFromUrl(url, {
+            quality: source.getAttribute("label") || source.getAttribute("res") || helpers.qualityFromText(url),
+            mimeType: source.getAttribute("type") || ""
+          }, helpers));
+        });
       });
     });
     return sources;
