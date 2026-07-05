@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Video Finder Downloader</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="header">
+        <div>
+          <h1>Video Finder</h1>
+          <p id="pageHost" class="host">Current tab</p>
+        </div>
+        <button id="refreshBtn" class="icon-btn" title="Scan again">↻</button>
+      </header>
+
+      <section id="status" class="status">Scanning page videos…</section>
+
+      <label class="debug-toggle" title="Enable verbose logs in popup, content script, and background consoles">
+        <input id="debugToggle" type="checkbox" />
+        <span>Debug logs</span>
+      </label>
+
+      <section id="videoList" class="video-list" aria-live="polite"></section>
+
+      <footer class="footer">
+        <p>
+          Downloads normal media URLs only. DRM/protected streams are not bypassed.
+        </p>
+      </footer>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>

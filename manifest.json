@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "Video Finder Downloader",
+  "description": "Find downloadable video sources on the current page, show available qualities, and download non-DRM media.",
+  "version": "1.0.0",
+  "permissions": [
+    "activeTab",
+    "downloads",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Video Finder Downloader",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "scripts/common.js",
+        "scripts/*.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]}
